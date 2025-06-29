@@ -95,7 +95,9 @@ def test_login_success(setup,client_code,username,password):
     try:
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[data-tooltip-id='Dashboard']")))
         log_success_to_word("Pass",client_code,username,password)
+        #create_new_role(driver,wait)
         create_new_user(driver,wait)
+        
     except:
         log_success_to_word("Fail", client_code,username,password)
         pytest.fail("Login failed or dashboard not loaded.")
@@ -110,17 +112,31 @@ def create_new_user(driver, wait: WebDriverWait):
     try:
         # Navigate to User Management
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-tooltip-id="User Management"]'))).click()
+
+        search_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[placeholder='Search here']")))
+        search_input.clear()
+        search_input.send_keys("Yubraj11")
+        time.sleep(2)
+
+        existing_user = driver.find_elements(By.XPATH, "//td[contains(text(), 'Yubraj11')]")
+
+        if existing_user:
+            print("ℹ️ User already exists. Clicking Update.")
+            update_button = wait.until(EC.element_to_be_clickable((
+                By.XPATH, "//td[contains(text(), 'Yubraj11')]/following-sibling::td//button[contains(text(), 'Update')]"
+            )))
+            update_button.click()
         
         # Click Add button
         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Add']"))).click()
         
         # Fill in user details
-        wait.until(EC.element_to_be_clickable((By.NAME, "username"))).send_keys("Yubraj11")
-        wait.until(EC.element_to_be_clickable((By.NAME, "firstName"))).send_keys("Yubraj")
+        wait.until(EC.element_to_be_clickable((By.NAME, "username"))).send_keys("kul11")
+        wait.until(EC.element_to_be_clickable((By.NAME, "firstName"))).send_keys("kul")
         wait.until(EC.element_to_be_clickable((By.NAME, "middleName"))).send_keys("")
-        wait.until(EC.element_to_be_clickable((By.NAME, "lastName"))).send_keys("Khadka")
-        wait.until(EC.element_to_be_clickable((By.NAME, "email"))).send_keys("yubraj.khadka@infodev.com.np")
-        wait.until(EC.element_to_be_clickable((By.NAME, "phoneNumber"))).send_keys("9861562381")
+        wait.until(EC.element_to_be_clickable((By.NAME, "lastName"))).send_keys("paudel")
+        wait.until(EC.element_to_be_clickable((By.NAME, "email"))).send_keys("kul.paudel@infodev.com.np")
+        wait.until(EC.element_to_be_clickable((By.NAME, "phoneNumber"))).send_keys("9861562382")
         wait.until(EC.element_to_be_clickable((By.NAME, "section"))).send_keys("IT")
         
         # Select Branch
@@ -175,3 +191,29 @@ def create_new_user(driver, wait: WebDriverWait):
     except Exception as e:
         print(f"❌ Failed in user creation flow: {e}")
         pytest.fail("Could not complete new user creation")
+
+def create_new_role(driver,wait:webdriver):
+    try:
+        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-tooltip-id="User Management"]'))).click()
+        wait.until(EC.element_to_be_clickable((By.XPATH,"//p[text()='Role Setup']"))).click()
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Add']"))).click()
+        wait.until(EC.element_to_be_clickable((By.NAME,"code"))).send_keys("Role2")
+        wait.until(EC.element_to_be_clickable((By.NAME,"nameNepali"))).send_keys("Role2")
+        wait.until(EC.element_to_be_clickable((By.NAME,"nameEnglish"))).send_keys("Role1")
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='w-full' and text()='Save']"))).click()
+        time.sleep(4)
+
+
+
+     
+
+
+
+    except  Exception as e:
+        print(f"Failed to create Role")
+        pytest.fail("Could not Create New Role")
+        exit()
+
+        
+
+
