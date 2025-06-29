@@ -8,6 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from docx import Document
+import time
 
 @pytest.fixture
 def setup():
@@ -99,13 +100,78 @@ def test_login_success(setup,client_code,username,password):
         log_success_to_word("Fail", client_code,username,password)
         pytest.fail("Login failed or dashboard not loaded.")
 
-def create_new_user(driver, wait):
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+import pytest
+import time
+
+def create_new_user(driver, wait: WebDriverWait):
     try:
-        print("Navigating to User Management...")
-        element = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, "a[data-tooltip-id='User Managementgit']")))
-        driver.execute_script("arguments[0].scrollIntoView(true);", element)  # Ensure visibility
-        element.click()
-        print("✅ User Management clicked successfully.")
+        # Navigate to User Management
+        wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-tooltip-id="User Management"]'))).click()
+        
+        # Click Add button
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Add']"))).click()
+        
+        # Fill in user details
+        wait.until(EC.element_to_be_clickable((By.NAME, "username"))).send_keys("Yubraj11")
+        wait.until(EC.element_to_be_clickable((By.NAME, "firstName"))).send_keys("Yubraj")
+        wait.until(EC.element_to_be_clickable((By.NAME, "middleName"))).send_keys("")
+        wait.until(EC.element_to_be_clickable((By.NAME, "lastName"))).send_keys("Khadka")
+        wait.until(EC.element_to_be_clickable((By.NAME, "email"))).send_keys("yubraj.khadka@infodev.com.np")
+        wait.until(EC.element_to_be_clickable((By.NAME, "phoneNumber"))).send_keys("9861562381")
+        wait.until(EC.element_to_be_clickable((By.NAME, "section"))).send_keys("IT")
+        
+        # Select Branch
+        branch_dropdown = wait.until(EC.element_to_be_clickable((
+            By.XPATH, "//label[contains(text(), 'Branch')]/following::div[contains(@class, 'css-9jkw19')]"
+        )))
+        branch_dropdown.click()
+        branch_input = wait.until(EC.presence_of_element_located((
+            By.CSS_SELECTOR, "input[id^='react-select'][type='text']"
+        )))
+        branch_input.send_keys("Head Office")
+        time.sleep(1)  # small pause for dropdown to populate
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Head Office']"))).click()
+        time.sleep(1)
+        
+        # Select Department
+        department_dropdown = wait.until(EC.element_to_be_clickable((
+            By.XPATH, "//label[contains(text(), 'Department')]/following::div[contains(@class, 'css-9jkw19')]"
+        )))
+        department_dropdown.click()
+        department_input = department_dropdown.find_element(By.XPATH, ".//input")
+        department_input.send_keys("Head Department")
+        time.sleep(1)
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Head Department']"))).click()
+        time.sleep(1)
+        
+        # Select User Type
+        user_type_dropdown = wait.until(EC.element_to_be_clickable((
+            By.XPATH, "//label[contains(text(), 'User Type')]/following::div[contains(@class, 'css-9jkw19')]"
+        )))
+        user_type_dropdown.click()
+        user_type_input = user_type_dropdown.find_element(By.XPATH, ".//input")
+        user_type_input.send_keys("Branch Admin")
+        time.sleep(1)
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Branch Admin']"))).click()
+        time.sleep(1)
+        
+        # Select Role (fixed typo and XPath)
+        role_dropdown = wait.until(EC.element_to_be_clickable((
+            By.XPATH, "//label[contains(text(),'Roles')]/following::div[contains(@class,'css-5fiuwh')]"
+        )))
+        role_dropdown.click()
+        role_input = role_dropdown.find_element(By.XPATH, ".//input")
+        role_input.send_keys("Nepal Admin")
+        time.sleep(1)
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Nepal Admin']"))).click()
+        time.sleep(1)
+        wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='w-full' and text()='Save']"))).click()
+        time.sleep(4)
+
+
     except Exception as e:
-        print(f"❌ Failed to click User Management: {e}")
-        pytest.fail("Could not navigate to User Management")
+        print(f"❌ Failed in user creation flow: {e}")
+        pytest.fail("Could not complete new user creation")
