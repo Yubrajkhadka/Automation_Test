@@ -95,7 +95,7 @@ def test_login_success(setup,client_code,username,password):
     try:
         wait.until(EC.presence_of_element_located((By.CSS_SELECTOR, "a[data-tooltip-id='Dashboard']")))
         log_success_to_word("Pass",client_code,username,password)
-        #create_new_role(driver,wait)
+        create_new_role(driver,wait)
         create_new_user(driver,wait)
         
     except:
@@ -112,20 +112,7 @@ def create_new_user(driver, wait: WebDriverWait):
     try:
         # Navigate to User Management
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-tooltip-id="User Management"]'))).click()
-
-        search_input = wait.until(EC.presence_of_element_located((By.XPATH, "//input[placeholder='Search here']")))
-        search_input.clear()
-        search_input.send_keys("Yubraj11")
-        time.sleep(2)
-
-        existing_user = driver.find_elements(By.XPATH, "//td[contains(text(), 'Yubraj11')]")
-
-        if existing_user:
-            print("ℹ️ User already exists. Clicking Update.")
-            update_button = wait.until(EC.element_to_be_clickable((
-                By.XPATH, "//td[contains(text(), 'Yubraj11')]/following-sibling::td//button[contains(text(), 'Update')]"
-            )))
-            update_button.click()
+        
         
         # Click Add button
         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Add']"))).click()
@@ -197,7 +184,7 @@ def create_new_role(driver,wait:webdriver):
         wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'a[data-tooltip-id="User Management"]'))).click()
         wait.until(EC.element_to_be_clickable((By.XPATH,"//p[text()='Role Setup']"))).click()
         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[text()='Add']"))).click()
-        wait.until(EC.element_to_be_clickable((By.NAME,"code"))).send_keys("Role2")
+        wait.until(EC.element_to_be_clickable((By.NAME,"code"))).send_keys("Role9")
         wait.until(EC.element_to_be_clickable((By.NAME,"nameNepali"))).send_keys("Role2")
         wait.until(EC.element_to_be_clickable((By.NAME,"nameEnglish"))).send_keys("Role1")
         wait.until(EC.element_to_be_clickable((By.XPATH, "//div[@class='w-full' and text()='Save']"))).click()
